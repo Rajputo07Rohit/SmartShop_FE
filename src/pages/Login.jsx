@@ -12,6 +12,17 @@ export default function Login() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    // ✅ Email validation
+    if (!email.includes("@") || !email.endsWith(".com")) {
+      return toast.error("Please enter a valid email address");
+    }
+
+    // ✅ Password empty check
+    if (!password) {
+      return toast.error("Password cannot be empty");
+    }
+
     try {
       const { data } = await api.post("/auth/login", { email, password });
       localStorage.setItem("token", data.token);
@@ -36,13 +47,33 @@ export default function Login() {
           </span>
         </div>
         <h1 className="text-2xl font-semibold mb-1 text-center">Sign in</h1>
-        <p className="text-sm text-gray-400 text-center mb-4">Welcome back — let’s shop smarter.</p>
+        <p className="text-sm text-gray-400 text-center mb-4">
+          Welcome back — let’s shop smarter.
+        </p>
+
         <form onSubmit={onSubmit} className="space-y-3">
-          <input className="input" placeholder="Email" value={email} onChange={(e)=>setEmail(e.target.value)} />
-          <input className="input" placeholder="Password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />
+          <input
+            className="input"
+            placeholder="Email "
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            className="input"
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <button className="btn-primary w-full">Login</button>
         </form>
-        <p className="text-sm text-gray-400 mt-4 text-center">No account? <Link to="/register" className="underline underline-offset-4">Create one</Link></p>
+
+        <p className="text-sm text-gray-400 mt-4 text-center">
+          No account?{" "}
+          <Link to="/register" className="underline underline-offset-4">
+            Create one
+          </Link>
+        </p>
       </motion.div>
     </div>
   );

@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { ShoppingCart, Book, LogOut } from "lucide-react";
 
 import ThemeToggle from "./components/ThemeToggle.jsx";
-import BackButton from "./components/BackButton.jsx";
 
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
@@ -14,12 +13,14 @@ import ListDetail from "./pages/ListDetail.jsx";
 import VendorResults from "./pages/VendorResults.jsx";
 import OrderSummary from "./pages/OrderSummary.jsx";
 import MockPayment from "./pages/MockPayment.jsx";
+
 import Protected from "./components/Protected.jsx";
+import Public from "./components/Public.jsx"; // ✅ ADDED
 
 export default function App() {
   const location = useLocation();
 
-  // ✅ pages where header should be hidden
+  // hide header on login/register screens
   const hiddenPaths = ["/login", "/register"];
   const shouldHideHeader = hiddenPaths.some((path) =>
     location.pathname.startsWith(path)
@@ -32,7 +33,7 @@ export default function App() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
-      {/* ✅ Conditional Header */}
+      {/* Header */}
       {!shouldHideHeader && (
         <motion.header
           initial={{ opacity: 0, y: -10 }}
@@ -40,6 +41,7 @@ export default function App() {
           className="sticky top-4 z-50"
         >
           <div className="card flex items-center justify-between px-4 py-3">
+            {/* Logo */}
             <Link to="/" className="flex items-center gap-2 font-bold text-lg">
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-brand-600 to-cyan-500 text-white shadow-glow">
                 <ShoppingCart size={18} />
@@ -47,6 +49,7 @@ export default function App() {
               <span className="drop-shadow-brand">ShopSmart</span>
             </Link>
 
+            {/* Nav Right */}
             <nav className="flex items-center gap-2">
               <a
                 href="#"
@@ -65,10 +68,9 @@ export default function App() {
         </motion.header>
       )}
 
-      {/* ✅ Toast notifications */}
       <Toaster position="top-center" />
 
-      {/* ✅ Page Layout */}
+      {/* Main Router */}
       <motion.main
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -76,11 +78,28 @@ export default function App() {
         className="mt-6"
       >
         <Routes>
+          {/* Smart redirect */}
           <Route path="/" element={<Navigate to="/dashboard" />} />
 
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {/* PUBLIC ROUTES (only accessible when NOT logged in) */}
+          <Route
+            path="/login"
+            element={
+              <Public>
+                <Login />
+              </Public>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <Public>
+                <Register />
+              </Public>
+            }
+          />
 
+          {/* PROTECTED ROUTES */}
           <Route
             path="/dashboard"
             element={
